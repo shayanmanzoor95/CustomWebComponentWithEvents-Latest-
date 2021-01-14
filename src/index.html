@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- <link rel="stylesheet" href="styles.scss"> -->
+</head>
+<body>
+    <script src="https://unpkg.com/@webcomponents/custom-elements"></script>
+        <!-- <custom-player id="videoPlayer" height="100px" src=".././assets/video2.mp4" type="video/mp4"></custom-player> -->
+        <!-- my-options='{"height":"500px","width":"700px","poster":"../../assets/poster.jpg","preload":"auto","muted":true,"autoplay": false,"controls": true, "sources": [{ "src": ".././assets/video.mp4", "type": "video/mp4" }]}' -->
+        <!-- <custom-player id="videoPlayer" onclick="testingFunction($event)" my-options='{"height":"500px","width":"700px","poster":"../../assets/poster.jpg","preload":"auto","muted":true,"autoplay": false,"controls": true, "sources": [{ "src": ".././assets/video2.mp4", "type": "video/mp4" }]}'   ></custom-player> -->
+
+        <!-- <custom-player id="videoPlayer" (myevent)="testingFunction(\$event)" my-options='{"height":"500px","width":"700px","poster":"../../assets/poster.jpg","preload":"auto","muted":true,"autoplay": false,"controls": true, "sources": [{ "src": ".././assets/video2.mp4", "type": "video/mp4" }]}'></custom-player> -->
+        
+        <p id="manipulate" style="size: 100px;"></p>
+
+        <custom-player id="videoPlayer" (myevent)="testingFunction(\$event)" my-options='{"height":"500px","width":"700px","poster":"../../assets/poster.jpg","preload":"auto","muted":true,"autoplay": false,"controls": true, "sources": [{ "src": ".././assets/video2.mp4", "type": "video/mp4" }]}'></custom-player>
+
+        
+        <!-- <custom-player id="videoPlayer2" (myevent)="testingFunction2(\$event)" my-options='{"height":"500px","width":"700px","poster":"../../assets/poster.jpg","preload":"auto","muted":true,"autoplay": false,"controls": true, "sources": [{ "src": ".././assets/video2.mp4", "type": "video/mp4" }]}'></custom-player>
+        
+        <p id="manipulate2" style="size: 100px;">asdad</p> -->
+
+        
+        <script type="text/javascript">
+        // function testingFunction(onTouchValue){
+        //     console.log(onTouchValue);
+        // }
+            const el = document.getElementById("videoPlayer");
+            const p=document.getElementById("manipulate");
+            el.addEventListener("myevent",function onEventFired(e){
+                const eventfired=e.detail;
+                console.log(e);
+                console.log(eventfired);
+                p.innerHTML=eventfired;
+            })
+
+            // const el2 = document.getElementById("videoPlayer2");
+            // const p2=document.getElementById("manipulate2");
+            // el2.addEventListener("myevent",function onEventFired2(e){
+            //     const eventfired=e.detail;
+            //     console.log(e);
+            //     console.log(eventfired);
+            //     p2.innerHTML=eventfired;
+            // })
+
+            
+        </script>
+
+        <!-- <script>
+            myelem=document.getElementsByName('custom-player')
+            var myobj={autoplay: true, controls: false, sources: [{ src: './video.mp4', type: 'video/mp4' }]}
+            var myobject=JSON.stringify(myobj);
+            console.log(myobject);
+        </script> -->
+</body>
+</html>
