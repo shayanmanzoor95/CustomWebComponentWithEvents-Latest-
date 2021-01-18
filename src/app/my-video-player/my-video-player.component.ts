@@ -4,13 +4,14 @@ import { IOptions } from './IOptions';
 
 
 
+
 @Component({
   selector: 'app-video-player',
   templateUrl: './my-video-player.component.html',
   styleUrls: ['./my-video-player.component.scss'],
   encapsulation:ViewEncapsulation.ShadowDom
 })
-export class MyVideoPlayerComponent implements OnInit,OnDestroy,OnChanges,AfterViewInit {
+export class MyVideoPlayerComponent implements OnDestroy,AfterViewInit {
   @ViewChild('target',{ static: false }) target;
   // see options: https://github.com/videojs/video.js/blob/mastertutorial-options.html
   @Input('myOptions') Options: IOptions[];
@@ -20,9 +21,7 @@ export class MyVideoPlayerComponent implements OnInit,OnDestroy,OnChanges,AfterV
   onTouchValue:string;
 
   @Output() myevent = new EventEmitter<string>();
-  
-
- 
+   
   constructor(
     private elementRef: ElementRef,
   ) { }
@@ -31,17 +30,6 @@ export class MyVideoPlayerComponent implements OnInit,OnDestroy,OnChanges,AfterV
   ngAfterViewInit(): void {
        // instantiate Video.js
   this.videoPlayer(this.Options);
-  }
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes.Options);
-  }
-
-  
-
-ngOnInit() {
-// console.log(this.onTouchValue);
   }
   
 
@@ -54,74 +42,84 @@ ngOnInit() {
 
 
   videoPlayer(myOptions){
-    // let mySource=this.mappingFunction();
 
-    // console.log(this.Options)
     let myobj=JSON.stringify(myOptions);
+
     let NewSource=JSON.parse(myobj);
     // console.log("NewSource",NewSource)
     let FinalSource=JSON.parse(NewSource);
-    // console.log("FINAL SOURCE",FinalSource)
-    console.log(this.target.nativeElement);
 
-    
+    console.log("THIS IS THE FINAL SOURCE",FinalSource);
+
+    console.log("TARGET ELEMENT",this.target.nativeElement);
+
+    console.log(Object.keys(FinalSource))
+
+    let keys=Object.keys(FinalSource);
+  
+
+
+//ERROR HANDELING
+    if(!FinalSource.hasOwnProperty("sources")){
+         this.onTouchValue="There is no source and type provided"
+         this.myevent.emit(this.onTouchValue);
+       }
+    else if(FinalSource["sources"][0]["type"]=="video/hls"){
+      this.onTouchValue="The file format is not supported"
+      this.myevent.emit(this.onTouchValue);
+    }
+    else{
     this.player = videojs(this.target.nativeElement, FinalSource, onPlayerReady); 
-    
-
+    }
     
     function onPlayerReady() {
-      // console.log('onPlayerReady', this);
-      this.on('pause',()=>{
-        // this.onTouchValue="paused"
-
-      })
-
-      this.on('play',()=>{
-        // this.onTouchValue="played"
-      })
-
       this.on('ended',function(){
-        videojs.log('over so soon?');
+        
       })
-
-      // console.log("FUNCTION FINAL SOURCE",FinalSource);
-
-     
-
-
-      // this.on('pause',function(){
-      //   let remaing=this.remainingTime();
-      //   remaing=Math.round(remaing);
-      //   console.log(remaing);
-      // })
-
-      // this.on('error',function(){
-      //   console.log("error")
-      // })
-
-      // this.on('seeking',function(){
-      //   let remaing=this.remainingTime();
-      //   remaing=Math.round(remaing);
-      //   console.log(remaing);
-      // })
+      this.on('error',()=>{
+        console.log(this.error());
+      })
     }
   }
 
 
-  onEventRaised(){
+  onPlayPauseEventRaised(){
+    // this.player.on('start',()=>{
+    //   this.onTouchValue="Video has Started."
+    //   // console.log(this.onTouchValue);
+    //   this.myevent.emit(this.onTouchValue);
+    // })
+    this.player.on('autoplay',()=>{
+      this.onTouchValue="Video is being played"
+      this.myevent.emit(this.onTouchValue);
+    })
+    this.player.on('start',()=>{
+      this.onTouchValue="Video Has started";
+      this.myevent.emit(this.onTouchValue);
+    })
+    this.player.bigPlayButton.on('touched',()=>{
+      console.log("big play button clicked");
+      this.onTouchValue="Video is being played"
+      this.myevent.emit(this.onTouchValue);
+    })
     this.player.on('pause',()=>{
       this.onTouchValue="Video has stopped."
-      // console.log(this.onTouchValue);
       this.myevent.emit(this.onTouchValue);
     })
     this.player.on('play',()=>{
       this.onTouchValue="Video is being played"
-      // console.log(this.onTouchValue);
       this.myevent.emit(this.onTouchValue);
     })
     this.player.on('buffer',()=>{
       this.onTouchValue="buffering"
-      // console.log(this.onTouchValue);
+      this.myevent.emit(this.onTouchValue);
+    })
+    this.player.on("ended",()=>{
+      this.onTouchValue="Video Ended"
+      this.myevent.emit(this.onTouchValue);
+    })
+    this.player.on("seeking",()=>{
+      this.onTouchValue="Seeking Video"
       this.myevent.emit(this.onTouchValue);
     })
   }
@@ -154,7 +152,6 @@ ngOnInit() {
       console.log(this.rate)
       this.player.playbackRate(this.rate)
     }
-      // this.player.playbackRate(3);
   }
 
   playBackrateDecrease(){
@@ -296,3 +293,26 @@ ngOnInit() {
     //   console.log("Played Event",this.onTouchValue)
     //   this.myevent.emit(this.onTouchValue);
     // }
+
+
+    // console.log("FUNCTION FINAL SOURCE",FinalSource);
+
+     
+
+
+      // this.on('pause',function(){
+      //   let remaing=this.remainingTime();
+      //   remaing=Math.round(remaing);
+      //   console.log(remaing);
+      // })
+
+      // this.on('error',function(){
+      //   console.log("error")
+      // })
+
+      // this.on('seeking',function(){
+      //   let remaing=this.remainingTime();
+      //   remaing=Math.round(remaing);
+      //   console.log(remaing);
+      // })
+      
